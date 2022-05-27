@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
-const Query = require('./query');
+const {db, Query } = require('./query');
 const q = new Query();
+
 
 const menuQ = [
     {
@@ -13,8 +14,50 @@ const deptQ = [
     {
         type:    'input',
         name:    'deptName',
-        message: 'Insert the name of the new Department',
+        message: 'Insert the name of the new Department:',
     }
+];
+const roleQ = [
+    {
+        type:    'input',
+        name:    'roleTitle',
+        message: 'Insert the new role\'s title:',
+    },
+    {
+        type:    'input',
+        name:    'salary',
+        message: 'Insert the new role\'s salary:',
+    },
+    {
+        type:    'list',
+        name:    'deptId',
+        message: 'Select the new role\'s department ID:',
+        choices: dbOptions = db.query(`SELECT * FROM departments`, function (error, resp){
+            return resp;
+        }),
+    },
+];
+const employeeQ = [
+    {
+        type:    'input',
+        name:    'roleTitle',
+        message: 'Insert the new role\'s title:',
+    },
+    {
+        type:    'input',
+        name:    'salary',
+        message: 'Insert the new role\'s salary:',
+    },
+    {
+        type:    'input',
+        name:    'deptId',
+        message: 'Insert the new role\'s department ID:',
+    },
+    {
+        type:    'input',
+        name:    'deptId',
+        message: 'Insert the new role\'s department ID:',
+    },
 ];
 
 menu = async () => {
@@ -23,6 +66,7 @@ menu = async () => {
 }
 
 switchOptions = async (response) => {
+    let answers;
     switch (response){
         case 'View all departments':
             await q.viewAllDepartments();
@@ -34,12 +78,16 @@ switchOptions = async (response) => {
             await q.viewAllEmployees();
             break;
         case 'Add a department':
-            let response = await inquirer.prompt(deptQ);
-            await q.addNewDepartment(response.deptName)
+            answers = await inquirer.prompt(deptQ);
+            await q.addNew('department',answers);
             break;
         case 'Add a role':
+            answers = await inquirer.prompt(roleQ);
+            await q.addNew('role',answers);
             break;
         case 'Add an employee':
+            answers = await inquirer.prompt(roleQ);
+            await q.addNew('employee',answers);
             break;
         case 'Update an employee role':
             break;
@@ -61,5 +109,11 @@ switchOptions = async (response) => {
             break;
     }
    menu();
-}
+};
 menu();
+// async function test (){
+
+// console.log((await db.promise().query(`SELECT * FROM departments`))[0]);
+// }
+
+//    test();

@@ -6,7 +6,7 @@ VALUES ("Mainline"),
        ("Cutting"),
        ("Mixing");
 
-INSERT INTO roles (tittle, salary,dep_id)
+INSERT INTO roles (title, salary,dep_id)
 VALUES ("Production Manager Mainline", 1000,1),
        ("Production Manager Cold", 1000,3),
        ("Production Manager Hot", 2000,2),
