@@ -12,5 +12,4 @@ LEFT JOIN roles
 ON employees.role_id = roles.id
 LEFT JOIN departments
 ON roles.dep_id = departments.id
-LEFT JOIN employees AS managers
-ON employees.manager_id = managers.id;
+LEFT JOIN employees AS managers ON employees.manager_id = managers.id;

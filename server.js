@@ -6,25 +6,36 @@ const menuQ = [
     {
         type:    'list',
         name:    'selection',
-        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role'],
-    },
-]
+        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role','Exit'],
+    }
+];
+const deptQ = [
+    {
+        type:    'input',
+        name:    'deptName',
+        message: 'Insert the name of the new Department',
+    }
+];
+
 menu = async () => {
-    const response = await inquirer.prompt(menuQ);
-    switchOptions(response.selection);
+    const option = await inquirer.prompt(menuQ);
+    await switchOptions(option.selection);
 }
 
-switchOptions = (response) => {
+switchOptions = async (response) => {
     switch (response){
         case 'View all departments':
-            q.viewAllDepartments()
-            .then(() => menu());
+            await q.viewAllDepartments();
             break;
         case 'View all roles':
+            await q.viewAllRoles();
             break;
         case 'View all employees':
+            await q.viewAllEmployees();
             break;
         case 'Add a department':
+            let response = await inquirer.prompt(deptQ);
+            await q.addNewDepartment(response.deptName)
             break;
         case 'Add a role':
             break;
@@ -49,5 +60,6 @@ switchOptions = (response) => {
         default:
             break;
     }
+   menu();
 }
 menu();
