@@ -1,41 +1,24 @@
-const express = require('express');
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
-
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-// Connect to database
-const db = mysql.createConnection(
-  {
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'courses_db'
-  },
-  console.log(`Connected to the courses_db database.`)
-);
+const Query = require('./query');
+const q = new Query();
 
 const menuQ = [
     {
         type:    'list',
-        message: ``,
         name:    'selection',
         choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role'],
     },
 ]
 menu = async () => {
-    const response = await inquirer.prompt (menuQ);
-    return response;
+    const response = await inquirer.prompt(menuQ);
+    switchOptions(response.selection);
 }
 
 switchOptions = (response) => {
     switch (response){
         case 'View all departments':
+            q.viewAllDepartments()
+            .then(() => menu());
             break;
         case 'View all roles':
             break;
@@ -67,3 +50,4 @@ switchOptions = (response) => {
             break;
     }
 }
+menu();
