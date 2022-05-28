@@ -57,6 +57,22 @@ class Query{
     ORDER BY Department;`);
     this.displayTable(view);      
   }
+  async viewConsumedBudgetByDepartment(response){
+    let aux = await db.promise().query(`CREATE TABLE auxiliary AS
+    SELECT employees.id AS ID, employees.role_id AS RoleID, departments.dep_name AS Dept, roles.salary AS Salary
+    FROM EMPLOYEES
+    LEFT JOIN roles
+    ON employees.role_id = roles.id
+    LEFT JOIN departments
+    ON departments.id = roles.dep_id
+    ORDER BY ID;`);
+
+    let view = await db.promise().query(`SELECT SUM(Salary)
+    FROM auxiliary
+    WHERE Dept = '${response.departmentBudget}';`);
+console.log(view[0])
+    this.displayTable(view);      
+  }
   async modify(element,response){
     let add;
     let view;
@@ -166,12 +182,33 @@ class Query{
 
         case 'Delete departments':
           //Query to delete a department from departments table
-          update = await db.promise().query(`DELETE FROM departments WHERE dep_name = ${response.department};`);
-          view = await db.promise().query(`SELECT departments.id AS ID, departments.dep_name AS Department Name FROM departments;`);
+          update = await db.promise().query(`DELETE FROM departments WHERE dep_name = '${response.department}';`);
+          view = await db.promise().query(`SELECT departments.id AS ID, departments.dep_name AS 'Department Name' FROM departments;`);
           console.log('\nDepartment deleted succesfully')
 
-          //Display the row with the update
+          //Display the table with the update
           this.displayTable(view);
+          break;
+        
+        case 'Delete roles':
+          //Query to delete a department from departments table
+          update = await db.promise().query(`DELETE FROM roles WHERE roles.title = '${response.role}';`);
+          view = await db.promise().query(`SELECT roles.id AS ID, roles.title AS 'Job Title', roles.salary AS Salary, roles.dep_id AS 'Dept. ID' FROM roles;`);
+          console.log('\nRole deleted succesfully')
+
+          //Display the table with the update
+          this.displayTable(view);
+          break;
+
+        case 'Delete employees':
+          //Query to delete a department from departments table
+          update = await db.promise().query(`DELETE FROM employees WHERE concat(employees.first_name,' ',employees.last_name) = '${response.employee}';`);
+          view = await db.promise().query(`SELECT employees.id AS ID, employees.first_name AS 'First Name', employees.last_name AS 'Last Name', employees.role_id AS 'Role ID', employees.manager_id AS 'Manager ID' FROM employees;`);
+          console.log('\nEmployee deleted succesfully')
+
+          //Display the table with the update
+          this.displayTable(view);
+          break;
 
         default:
           console.log('Wrong option');

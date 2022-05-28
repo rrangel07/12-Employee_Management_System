@@ -7,17 +7,17 @@ VALUES ("Mainline"),
        ("Mixing");
 
 INSERT INTO roles (title, salary,dep_id)
-VALUES ("Production Manager Mainline", 1000,1),
-       ("Production Manager Cold", 1000,3),
-       ("Production Manager Hot", 2000,2),
-       ("Executive Sous-Chef", 1200,2),
-       ("Lead Hot", 650,2),
-       ("Lead Cold", 800,3),
-       ("Prepper", 540,4),
-       ("Cutter", 540,5),
-       ("Mixer", 540,6),
-       ("Production Worker Hot", 540,2),
-       ("Production Worker Cold", 540,3);
+VALUES ("Production Manager Mainline", 52000,1),
+       ("Production Manager Cold", 52000,3),
+       ("Production Manager Hot", 104000,2),
+       ("Executive Sous-Chef", 62400,2),
+       ("Lead Hot", 33800,2),
+       ("Lead Cold", 41600,3),
+       ("Prepper", 29120,4),
+       ("Cutter", 29120,5),
+       ("Mixer", 29120,6),
+       ("Production Worker Hot", 29120,2),
+       ("Production Worker Cold", 29120,3);
     
 INSERT INTO employees (first_name, last_name,role_id,manager_id)
 VALUES ("Lance","Holton" ,3,NULL),

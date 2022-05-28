@@ -6,7 +6,7 @@ const menuQ = [
     {
         type:    'list',
         name:    'selection',
-        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Update an employee manager', 'View employees by manager', 'View employees by department', 'Delete departments', 'Delete roles', 'Exit'],
+        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Update an employee manager', 'View employees by manager', 'View employees by department', 'Delete departments', 'Delete roles', 'Delete employees', 'View consumed budget of a department', 'Exit'],
     }
 ];
 const deptQ = [
@@ -162,7 +162,7 @@ switchOptions = async (response) => {
                 {
                     type:    'list',
                     name:    'department',
-                    message: 'Select the department you want to erase',
+                    message: 'Select the department you want to delete',
                     choices:  deptName,
                 }
             ];
@@ -170,10 +170,47 @@ switchOptions = async (response) => {
             await q.modify('Delete departments',answers);
             break;
         case 'Delete roles':
+            roleTitle = await getList('roleId');
+            console.log(roleTitle);
+            const deleteRole = [
+                {
+                    type:    'list',
+                    name:    'role',
+                    message: 'Select the role you want to delete',
+                    choices:  roleTitle,
+                }
+            ];
+            answers = await inquirer.prompt(deleteRole);
+            await q.modify('Delete roles',answers);
             break;
         case 'Delete employees':
+            employeeName = await getList('employeeName');
+            console.log(employeeName);
+            const deleteEmployee = [
+                {
+                    type:    'list',
+                    name:    'employee',
+                    message: 'Select the employee you want to delete',
+                    choices:  employeeName,
+                }
+            ];
+            answers = await inquirer.prompt(deleteEmployee);
+            await q.modify('Delete employees',answers);
             break;
         case 'View consumed budget of a department':
+            deptName = await getList('deptId')
+            console.log(deptName);
+            const deptBudget = [
+                {
+                    type:    'list',
+                    name:    'departmentBudget',
+                    message: 'Select the department you want to check on',
+                    choices:  deptName,
+                }
+            ];
+            answers = await inquirer.prompt(deptBudget);
+            await q.viewConsumedBudgetByDepartment(answers);
+            break;
             break;
         default:
             break;
