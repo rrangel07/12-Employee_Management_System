@@ -211,7 +211,6 @@ switchOptions = async (response) => {
             answers = await inquirer.prompt(deptBudget);
             await q.viewConsumedBudgetByDepartment(answers);
             break;
-            break;
         default:
             break;
     }

@@ -58,19 +58,17 @@ class Query{
     this.displayTable(view);      
   }
   async viewConsumedBudgetByDepartment(response){
-    let aux = await db.promise().query(`CREATE TABLE auxiliary AS
-    SELECT employees.id AS ID, employees.role_id AS RoleID, departments.dep_name AS Dept, roles.salary AS Salary
+
+    let sum = await db.promise().query(`SELECT CONCAT('$',SUM(Salary)) as 'Consumed Budget' , test.Dept
+    FROM (SELECT employees.id AS ID, employees.role_id AS RoleID, departments.dep_name AS Dept, roles.salary AS Salary
     FROM EMPLOYEES
     LEFT JOIN roles
     ON employees.role_id = roles.id
     LEFT JOIN departments
     ON departments.id = roles.dep_id
-    ORDER BY ID;`);
-
-    let view = await db.promise().query(`SELECT SUM(Salary)
-    FROM auxiliary
-    WHERE Dept = '${response.departmentBudget}';`);
-console.log(view[0])
+    ORDER BY ID) AS test
+    WHERE test.Dept = '${response.departmentBudget}';`);
+    console.log(view[0])
     this.displayTable(view);      
   }
   async modify(element,response){
