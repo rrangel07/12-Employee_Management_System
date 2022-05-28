@@ -6,7 +6,7 @@ const menuQ = [
     {
         type:    'list',
         name:    'selection',
-        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Update an employee manager', 'View employees by manager', 'Exit'],
+        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Update an employee manager', 'View employees by manager', 'View employees by department', 'Delete departments', 'Delete roles', 'Exit'],
     }
 ];
 const deptQ = [
@@ -26,6 +26,7 @@ switchOptions = async (response) => {
     let managerName;
     let roleTitle;
     let employeeName;
+    let deptName;
     switch (response){
 
         case 'View all departments':
@@ -42,11 +43,11 @@ switchOptions = async (response) => {
 
         case 'Add a department':
             answers = await inquirer.prompt(deptQ);
-            await q.modify('department',answers);
+            await q.modify('Add a department',answers);
             break;
 
         case 'Add a role':
-            const deptName = await getList('deptId')
+            deptName = await getList('deptId')
             console.log(deptName);
             const roleQ = [
                 {
@@ -67,7 +68,7 @@ switchOptions = async (response) => {
                 },
             ];
             answers = await inquirer.prompt(roleQ);
-            await q.modify('role',answers);
+            await q.modify('Add a role',answers);
             break;
 
         case 'Add an employee':
@@ -101,7 +102,7 @@ switchOptions = async (response) => {
             ];
             
             answers = await inquirer.prompt(employeeQ);
-            await q.modify('employee',answers);
+            await q.modify('Add an employee',answers);
             break;
 
         case 'Update an employee role':
@@ -152,8 +153,21 @@ switchOptions = async (response) => {
             await q.viewEmployeesByManager();
             break;
         case 'View employees by department':
+            await q.viewEmployeesByDepartment();
             break;
         case 'Delete departments':
+            deptName = await getList('deptId')
+            console.log(deptName);
+            const deleteDept = [
+                {
+                    type:    'list',
+                    name:    'department',
+                    message: 'Select the department you want to erase',
+                    choices:  deptName,
+                }
+            ];
+            answers = await inquirer.prompt(deleteDept);
+            await q.modify('Delete departments',answers);
             break;
         case 'Delete roles':
             break;

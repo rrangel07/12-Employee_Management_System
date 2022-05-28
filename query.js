@@ -19,7 +19,7 @@ class Query{
     console.log(table);  
   }
     async viewAllDepartments(){
-    let view = await db.promise().query('SELECT departments.dep_name AS Department, departments.id AS ID FROM departments');
+    let view = await db.promise().query('SELECT departments.dep_name AS Department, departments.id AS ID FROM departments;');
     this.displayTable(view);     
   }
   async viewAllRoles(){
@@ -44,7 +44,17 @@ class Query{
     FROM employees
     LEFT JOIN employees AS manager
     ON  employees.manager_id = manager.id
-    ORDER BY Manager`);
+    ORDER BY Manager;`);
+    this.displayTable(view);      
+  }
+  async viewEmployeesByDepartment(){
+    let view = await db.promise().query(`SELECT employees.id AS ID, employees.first_name AS 'First Name', employees.last_name AS 'Last Name', departments.dep_name AS Department
+    FROM employees
+    LEFT JOIN roles 
+    ON employees.role_id = roles.id
+    LEFT JOIN departments
+    ON roles.dep_id = departments.id
+    ORDER BY Department;`);
     this.displayTable(view);      
   }
   async modify(element,response){
@@ -57,7 +67,7 @@ class Query{
     let update;
     switch (element){
 
-        case 'department':
+        case 'Add a department':
           //Query to add the new role in the roles table
           add = await db.promise().query(`INSERT INTO departments (dep_name)
           VALUES ('${response.deptName}')`);
@@ -68,7 +78,7 @@ class Query{
           this.displayTable(view);
         break;
 
-        case 'role':
+        case 'Add a role':
           //Checks that enquirer is getting the options from the list
           console.log(response.deptId)
 
@@ -89,7 +99,7 @@ class Query{
           this.displayTable(view);
         break;
 
-        case 'employee':
+        case 'Add an employee':
           //Checks that enquirer is getting the options from the list
           console.log(response.roleTitle)
           console.log(response.managerName)
@@ -153,6 +163,15 @@ class Query{
           //Display the row with the update
           this.displayTable(view);
           break;
+
+        case 'Delete departments':
+          //Query to delete a department from departments table
+          update = await db.promise().query(`DELETE FROM departments WHERE dep_name = ${response.department};`);
+          view = await db.promise().query(`SELECT departments.id AS ID, departments.dep_name AS Department Name FROM departments;`);
+          console.log('\nDepartment deleted succesfully')
+
+          //Display the row with the update
+          this.displayTable(view);
 
         default:
           console.log('Wrong option');
