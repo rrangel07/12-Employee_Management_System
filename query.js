@@ -68,8 +68,8 @@ class Query{
     ON departments.id = roles.dep_id
     ORDER BY ID) AS test
     WHERE test.Dept = '${response.departmentBudget}';`);
-    console.log(view[0])
-    this.displayTable(view);      
+    // console.log(sum)
+    this.displayTable(sum);      
   }
   async modify(element,response){
     let add;
@@ -94,14 +94,14 @@ class Query{
 
         case 'Add a role':
           //Checks that enquirer is getting the options from the list
-          console.log(response.deptId)
+          // console.log(response.deptId)
 
           //Look for the department ID code
           findDeptCode = await db.promise().query(`SELECT id FROM departments WHERE dep_name='${response.deptId}'`);
           findDeptCode = findDeptCode[0].map(element => element.id);
 
           //Check if the department ID was found
-          console.log(findDeptCode);
+          // console.log(findDeptCode);
 
           //Query to add the new role in the roles table
           add = await db.promise().query(`INSERT INTO roles (title,salary,dep_id)
@@ -115,18 +115,22 @@ class Query{
 
         case 'Add an employee':
           //Checks that enquirer is getting the options from the list
-          console.log(response.roleTitle)
-          console.log(response.managerName)
+          // console.log(response.roleTitle)
+          // console.log(response.managerName)
 
           //Look for the role ID code & managers ID
           findRoleId = await db.promise().query(`SELECT id FROM roles WHERE title='${response.roleTitle}'`);
           findRoleId = findRoleId[0].map(element => element.id);
-          findManagerId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.managerName}'`);
-          findManagerId = findManagerId[0].map(element => element.id);
+          if (response.managerName !== 'NULL'){
+            findManagerId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.managerName}'`);
+            findManagerId = findManagerId[0].map(element => element.id);
+          } else {
+            findManagerId = 'NULL';
+          }
 
           //Check if the role ID code & managers ID were found
-          console.log(findRoleId);
-          console.log(findManagerId);
+          // console.log(findRoleId);
+          // console.log(findManagerId);
 
           //Query to add the new employee in the employees table
           add = await db.promise().query(`INSERT INTO employees (first_name,last_name,role_id,manager_id)
@@ -140,14 +144,14 @@ class Query{
 
         case 'Update role':
           //Look for the role ID code & employee ID
-          findRoleId = await db.promise().query(`SELECT id FROM roles WHERE title='${response.newRole}'`);
+          findRoleId = await db.promise().query(`SELECT id FROM roles WHERE title='${response.newRole}';`);
           findRoleId = findRoleId[0].map(element => element.id);
-          findEmployeeId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.employeeName}'`);
+          findEmployeeId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.employeeName}';`);
           findEmployeeId = findEmployeeId[0].map(element => element.id);
 
           //Check if the role ID code & managers ID were found
-          console.log(findRoleId);
-          console.log(findEmployeeId);
+          // console.log(findRoleId);
+          // console.log(findEmployeeId);
 
           //Query to update an employee role in the employees table
           update = await db.promise().query(`UPDATE employees SET role_id = ${findRoleId} WHERE id=${findEmployeeId};`);
@@ -159,15 +163,19 @@ class Query{
           break;
 
         case 'Update manager':
-          //Look for the role ID code & employee ID
-          findManagerId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.newManager}'`);
-          findManagerId = findManagerId[0].map(element => element.id);
+          //Look for the manager ID & employee ID
+          if (response.newManager !== 'NULL'){
+            findManagerId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.newManager}';`);
+            findManagerId = findManagerId[0].map(element => element.id);
+          } else {
+            findManagerId = 'NULL';
+          }
           findEmployeeId = await db.promise().query(`SELECT id FROM employees WHERE concat(employees.first_name,' ',employees.last_name)='${response.employeeName}'`);
           findEmployeeId = findEmployeeId[0].map(element => element.id);
 
-          //Check if the role ID code & managers ID were found
-          console.log(findManagerId);
-          console.log(findEmployeeId);
+          //Check if the managers ID & employee ID were found
+          // console.log(findManagerId);
+          // console.log(findEmployeeId);
 
           //Query to update an employee role in the employees table
           update = await db.promise().query(`UPDATE employees SET manager_id = ${findManagerId} WHERE id=${findEmployeeId};`);

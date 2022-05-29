@@ -48,7 +48,7 @@ switchOptions = async (response) => {
 
         case 'Add a role':
             deptName = await getList('deptId')
-            console.log(deptName);
+            // console.log(deptName);
             const roleQ = [
                 {
                     type:    'input',
@@ -73,9 +73,9 @@ switchOptions = async (response) => {
 
         case 'Add an employee':
             roleTitle = await getList('roleId');
-            console.log(roleTitle);
-            managerName = await getList('managerId');
-            console.log(managerName);
+            // console.log(roleTitle);
+            managerName = ['NULL', ...await getList('managerId')];
+            // console.log(managerName);
             const employeeQ = [
                 {
                     type:    'input',
@@ -107,9 +107,9 @@ switchOptions = async (response) => {
 
         case 'Update an employee role':
             employeeName = await getList('employeeName');
-            console.log(employeeName);
+            // console.log(employeeName);
             roleTitle = await getList('roleId');
-            console.log(roleTitle);
+            // console.log(roleTitle);
             const employeeUpdateRole = [
                 {
                     type:    'list',
@@ -129,9 +129,9 @@ switchOptions = async (response) => {
             break;
         case 'Update an employee manager':
             employeeName = await getList('employeeName');
-            console.log(employeeName);
-            managerName = await getList('managerId');
-            console.log(managerName);
+            // console.log(employeeName);
+            managerName = managerName = ['NULL', ...await getList('managerId')];
+            // console.log(managerName);
             const employeeUpdateManager = [
                 {
                     type:    'list',
@@ -157,7 +157,7 @@ switchOptions = async (response) => {
             break;
         case 'Delete departments':
             deptName = await getList('deptId')
-            console.log(deptName);
+            // console.log(deptName);
             const deleteDept = [
                 {
                     type:    'list',
@@ -171,7 +171,7 @@ switchOptions = async (response) => {
             break;
         case 'Delete roles':
             roleTitle = await getList('roleId');
-            console.log(roleTitle);
+            // console.log(roleTitle);
             const deleteRole = [
                 {
                     type:    'list',
@@ -185,7 +185,7 @@ switchOptions = async (response) => {
             break;
         case 'Delete employees':
             employeeName = await getList('employeeName');
-            console.log(employeeName);
+            // console.log(employeeName);
             const deleteEmployee = [
                 {
                     type:    'list',
@@ -199,7 +199,7 @@ switchOptions = async (response) => {
             break;
         case 'View consumed budget of a department':
             deptName = await getList('deptId')
-            console.log(deptName);
+            // console.log(deptName);
             const deptBudget = [
                 {
                     type:    'list',
@@ -211,7 +211,12 @@ switchOptions = async (response) => {
             answers = await inquirer.prompt(deptBudget);
             await q.viewConsumedBudgetByDepartment(answers);
             break;
+        case'Exit':
+            console.log('Closing app')
+            process.exit();
+            break;
         default:
+            console.log('Wrong option');
             break;
     }
    menu();
@@ -222,16 +227,14 @@ getList = async (option) => {
     switch (option){
         case 'deptId':
             return (await db.promise().query('SELECT dep_name FROM departments'))[0].map((element) => element.dep_name);
-            break;
         case 'roleId':
             return (await db.promise().query('SELECT title FROM roles'))[0].map((element) => element.title);
-            break;
         case 'managerId':
             return (await db.promise().query(`SELECT concat(employees.first_name,' ',employees.last_name) AS Manager FROM employees WHERE manager_id IS NULL`))[0].map((element) => element.Manager);
-            break;
         case 'employeeName':
             return (await db.promise().query(`SELECT concat(employees.first_name,' ',employees.last_name) AS 'Name' FROM employees`))[0].map((element) => element.Name);
-            break;
-        
+        default:
+            console.log('Wrong option');
+            break;        
     }
 }
