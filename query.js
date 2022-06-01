@@ -84,7 +84,7 @@ class Query{
         case 'Add a department':
           //Query to add the new role in the roles table
           add = await db.promise().query(`INSERT INTO departments (dep_name)
-          VALUES ('${response.deptName}')`);
+          VALUES (?)`,[response.deptName]);
           view = await db.promise().query(`SELECT departments.id as ID, departments.dep_name as Department FROM departments;`);
           console.log('\nDepartment added succesfully')
 
@@ -105,7 +105,7 @@ class Query{
 
           //Query to add the new role in the roles table
           add = await db.promise().query(`INSERT INTO roles (title,salary,dep_id)
-          VALUES ('${response.roleTitle}',${response.salary},${findDeptCode})`);
+          VALUES (?, ? ,? )`, [response.roleTitle, response.salary, findDeptCode]);
           view = await db.promise().query(`SELECT roles.id as ID, roles.title as 'Job Title', roles.salary AS Salary, roles.dep_id AS 'Dept. ID' FROM roles;`);
           console.log('\nRole added succesfully')
 

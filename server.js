@@ -222,6 +222,7 @@ switchOptions = async (response) => {
    menu();
 };
 menu();
+// q.viewAllDepartments();
 
 getList = async (option) => {
     switch (option){
